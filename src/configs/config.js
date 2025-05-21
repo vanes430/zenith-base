@@ -18,7 +18,7 @@ export default {
   session: process.env.SESSION || "./.session",
   database: process.env.DATABASE || "database.json",
   mongoURi: process.env.MONGO_URI || "",
-  commands: "commands",
+  plugins: "plugins",
   scrapers: "scraper", 
   msg: {
     owner: "Fitur ini hanya dapat diakses oleh pemilik!",

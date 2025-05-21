@@ -10,7 +10,7 @@ import Helper from "./helper.js";
 const __dirname = Helper.__dirname(import.meta);
 const rootDirectory = Helper.__dirname(join(__dirname, "../"));
 const pluginFolder = Helper.__dirname(
-  join(__dirname, "../../" + config.commands),
+  join(__dirname, "../../" + config.plugins),
 );
 const pluginFilter = (filename) => /\.(js|mjs|cjs)$/.test(filename);
 const require = createRequire(import.meta.url);
