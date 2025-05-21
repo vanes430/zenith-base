@@ -20,12 +20,12 @@ const handler = async (m, { conn, args, text, usedPrefix, command }) => {
         .join("\n");
 
       return m.reply(`*Current Settings:*\n\n${settingsList}\n\n*Usage:*
-◦ View setting: ${usedPrefix + command} <type>
-◦ Change setting: ${usedPrefix + command} <type> <value>
+◦ View setting: ${m.prefix}${command} <type>
+◦ Change setting: ${m.prefix}${command} <type> <value>
 
 *Example:*
-◦ ${usedPrefix + command} firstchat true
-◦ ${usedPrefix + command} limit.free 15`);
+◦ ${m.prefix}${command} firstchat true
+◦ ${m.prefix}${command} limit.free 15`);
     }
 
     if (!value) {

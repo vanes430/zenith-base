@@ -150,6 +150,7 @@ const handleMessagesUpsert = async (client, store, m, messages) => {
               plugins,
               scrapers,
               Func,
+              client,
             })
           )
             continue;
