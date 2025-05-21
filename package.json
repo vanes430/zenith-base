@@ -1,0 +1,44 @@
+{
+  "name": "zenith-base",
+  "version": "1.0.0",
+  "description": "Simple Bot WhatsApp Using Baileys",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js --max-old-space-size=8192",
+    "dev": "nodemon index.js",
+    "pm2": "pm2 start index.js --name bot-sw -- --max-old-space-size=8192",
+    "restart:pm2": "pm2 restart bot-sw",
+    "stop:pm2": "pm2 stop bot-sw",
+    "lint": "eslint .",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "author": "vanes430",
+  "license": "MIT",
+  "dependencies": {
+    "@hapi/boom": "latest",
+    "baileys": "npm:baileys-mod@latest",
+    "cheerio": "latest",
+    "dotenv": "latest",
+    "file-type": "latest",
+    "fluent-ffmpeg": "latest",
+    "jimp": "latest",
+    "libphonenumber-js": "latest",
+    "mime-types": "latest",
+    "moment-timezone": "latest",
+    "mongoose": "latest",
+    "node-webpmux": "latest",
+    "pino": "latest",
+    "readline": "latest",
+    "syntax-error": "latest",
+    "yt-search": "latest"
+  },
+  "devDependencies": {
+    "eslint": "latest",
+    "globals": "latest",
+    "nodemon": "latest"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

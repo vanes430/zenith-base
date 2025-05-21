@@ -1,0 +1,4 @@
+.session/
+.env
+temp/database.json
+node_modules/
