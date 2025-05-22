@@ -61,11 +61,11 @@ const getDefaultSettings = () => ({
   smlcap: false,
   adReply: false,
   topup: [],
-  ch_id: "120363181344949815@newsletter",
-  ch_name: "Arifzyn Infomation",
+  ch_id: "120363404922144807@newsletter",
+  ch_name: "vanes430 Ch.",
   logo: "",
-  developer: "Arifzyn.",
-  packname: "YouTube : @arifzxa19",
+  developer: "vanes430",
+  packname: "https://github.com/vanes430",
   api: {},
   limit: {
     free: 10,
@@ -74,7 +74,7 @@ const getDefaultSettings = () => ({
   },
   maintenance: false,
   backup: {
-    enabled: true,
+    enabled: false,
     interval: 24, // hours
   },
 });
