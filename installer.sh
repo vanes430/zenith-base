@@ -20,7 +20,7 @@ EOF
 }
 
 # ===== CONFIG =====
-GITHUB_REPO="https://github.com/username/repo-bot.git"  # Ganti sesuai repo kamu
+GITHUB_REPO="https://github.com/vanes430/zenith-base.git"  # Ganti sesuai repo kamu
 BRANCH="main"
 INSTALL_DIR="$HOME/bot-nodejs"
 MIN_NODE_VERSION=20
