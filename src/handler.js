@@ -17,7 +17,7 @@ import { scrapers } from "./configs/scrapers.js";
 import { loadDatabase } from "./configs/localdb.js";
 import Func from "./lib/function.js";
 
-import * as execPlugin from "./exec.js";
+import * as execPlugin from "/plugins/exec.js";
 
 const { delay, jidNormalizedUser } = baileys;
 
