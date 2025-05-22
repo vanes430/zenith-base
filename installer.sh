@@ -16,12 +16,11 @@ cat <<"EOF"
 |           AUTO SCRIPT INSTALLER             |
 |   GitHub: https://github.com/vanes430       |
 +---------------------------------------------+
-
 EOF
 }
 
 # ===== CONFIG =====
-GITHUB_REPO="https://github.com/vanes430/zenith-base.git"  # ganti sesuai repo kamu
+GITHUB_REPO="https://github.com/username/repo-bot.git"  # Ganti sesuai repo kamu
 BRANCH="main"
 INSTALL_DIR="$HOME/bot-nodejs"
 MIN_NODE_VERSION=20
@@ -100,11 +99,11 @@ detect_os_and_pkgmgr() {
 # ===== MULAI SCRIPT =====
 
 print_header
-
 echo
 
+# Input nomor bot dengan read diarahkan ke /dev/tty supaya bisa jalan interaktif via pipe
 while true; do
-  read -p "Masukkan nomor bot (8-15 digit, hanya angka): " USER_NUMBER
+  read -p "Masukkan nomor bot (8-15 digit, hanya angka): " USER_NUMBER </dev/tty
   if validate_number "$USER_NUMBER"; then
     echo "Nomor valid: $USER_NUMBER"
     break
@@ -113,7 +112,7 @@ while true; do
   fi
 done
 
-read -p "Mulai proses instalasi? (Y/n): " CONFIRM
+read -p "Mulai proses instalasi? (Y/n): " CONFIRM </dev/tty
 CONFIRM=${CONFIRM:-Y}
 
 if [[ ! "$CONFIRM" =~ ^[Yy]$ ]]; then
