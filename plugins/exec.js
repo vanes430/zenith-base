@@ -5,46 +5,54 @@ import { createRequire } from "module";
 import cp, { exec as _exec } from "child_process";
 let exec = util.promisify(_exec).bind(cp);
 
-export async function before(m, { API, plugins, scrapers, Func }) {
-  if (m.isBaileys) return;
-  if (!m.isOwner) return;
+/**
+ * Hook before message processed
+ * Support eval JS with context { m, conn }
+ * Support shell exec
+ */
+export async function before(m, { client, plugins, scrapers, Func }) {
+  if (m.isBaileys) return false;
+  if (!m.isOwner) return false;
 
-  if ([">", "=>"].some((a) => m.body.toLowerCase().startsWith(a))) {
-    let __dirname = path.dirname(fileURLToPath(import.meta.url));
-    let require = createRequire(__dirname),
-      _return = "";
+  const bodyLower = m.body.toLowerCase();
 
+  // Handle eval JS > or =>
+  if (bodyLower.startsWith(">") || bodyLower.startsWith("=>")) {
+    // Ambil kode tanpa prefix > atau =>
+    const code = m.body.startsWith("=>")
+      ? m.body.slice(2).trim()
+      : m.body.slice(1).trim();
+
+    let result;
     try {
-      _return = /await/i.test(m.text)
-        ? eval("(async() => { " + m.text + " })()")
-        : eval(m.text);
+      // Buat fungsi async dan eksekusi dengan konteks {m, conn: client}
+      const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
+      const fn = new AsyncFunction("m", "conn", code);
+      result = await fn.call(client, m, client);
     } catch (e) {
-      _return = e;
+      result = e.toString();
     }
 
-    new Promise((resolve, reject) => {
-      try {
-        resolve(_return);
-      } catch (err) {
-        reject(err);
-      }
-    })
-      ?.then((res) => m.reply(util.format(res)))
-      ?.catch((err) => m.reply(util.format(err)));
+    await m.reply(typeof result === "string" ? result : util.format(result));
+    return true; // sudah di-handle, stop handler lain
   }
 
-  if (["$", "exec"].some((a) => m.body.toLowerCase().startsWith(a))) {
-    let o;
+  // Handle shell exec $ atau exec
+  if (bodyLower.startsWith("$") || bodyLower.startsWith("exec")) {
+    // Ambil command shell
+    const cmd = bodyLower.startsWith("$")
+      ? m.body.slice(1).trim()
+      : m.body.split(" ").slice(1).join(" ").trim();
+
     try {
-      o = await exec(m.text);
+      const { stdout, stderr } = await exec(cmd);
+      if (stdout) await m.reply(stdout);
+      if (stderr) await m.reply(stderr);
     } catch (e) {
-      o = e;
-    } finally {
-      let { stdout, stderr } = o;
-      if (typeof stdout === "string" && stdout.trim()) m.reply(stdout);
-      if (typeof stderr === "string" && stderr.trim()) m.reply(stderr);
+      await m.reply(e.toString());
     }
+    return true; // sudah di-handle, stop handler lain
   }
 
-  return !0;
+  return false; // tidak di-handle, lanjut handler utama
 }
