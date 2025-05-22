@@ -1,10 +1,13 @@
 #!/bin/bash
 
-# Cek pesan commit dari argumen
-if [ -z "$1" ]; then
+# Cek kalau argumen kosong
+if [ $# -eq 0 ]; then
   echo "Harap masukkan pesan commit. Contoh: bash push.sh \"Update tampilan produk\""
   exit 1
 fi
+
+# Gabungkan semua argumen sebagai pesan commit (utuh)
+commit_message="$*"
 
 # Ambil user.name & user.email dari config lokal repo
 username=$(git config user.name)
@@ -58,7 +61,7 @@ if git diff --cached --quiet; then
 fi
 
 # Commit dengan pesan argumen
-git commit -m "$1"
+git commit -m "$commit_message"
 
 # Push ke remote dan branch aktif
 git push "$remote" "$branch"
