@@ -57,7 +57,7 @@ if (/mongo/.test(config.database)) {
   Database = class Database {
     constructor() {
       this.data = {};
-      this.file = path.join(process.cwd(), "temp", config.database);
+      this.file = path.join(process.cwd(), config.temp, config.database);
     }
     read() {
       let data;

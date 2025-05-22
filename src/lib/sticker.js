@@ -8,16 +8,17 @@ import ff from "fluent-ffmpeg";
 import webp from "node-webpmux";
 import { fileTypeFromBuffer } from "file-type";
 import FormData from "form-data";
+import config from "../src/configs/config.js";
 
 async function imageToWebp(media) {
   const tmpFileOut = path.join(
     process.cwd(),
-    "temp",
+    config.temp,
     await Func.getRandom("webp"),
   );
   const tmpFileIn = path.join(
     process.cwd(),
-    "temp",
+    config.temp,
     await Func.getRandom("jpg"),
   );
 
@@ -46,12 +47,12 @@ async function imageToWebp(media) {
 async function videoToWebp(media) {
   const tmpFileOut = path.join(
     process.cwd(),
-    "temp",
+    config.temp,
     await Func.getRandom("webp"),
   );
   const tmpFileIn = path.join(
     process.cwd(),
-    "temp",
+    config.temp,
     await Func.getRandom("mp4"),
   );
 
@@ -98,12 +99,12 @@ async function writeExif(media, metadata) {
         : "";
   const tmpFileOut = path.join(
     process.cwd(),
-    "temp",
+    config.temp,
     await Func.getRandom("webp"),
   );
   const tmpFileIn = path.join(
     process.cwd(),
-    "temp",
+    config.temp,
     await Func.getRandom("webp", "15"),
   );
 
