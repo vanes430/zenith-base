@@ -8,7 +8,7 @@ import ff from "fluent-ffmpeg";
 import webp from "node-webpmux";
 import { fileTypeFromBuffer } from "file-type";
 import FormData from "form-data";
-import config from "../src/configs/config.js";
+import config from "../configs/config.js";
 
 async function imageToWebp(media) {
   const tmpFileOut = path.join(
