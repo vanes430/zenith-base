@@ -79,7 +79,7 @@ export default {
 
       const teks = `
 ✨ Bot Delay: *${elapsedSec} seconds* (${elapsedMs} ms)
-⏱️ Uptime: _${func.runtime(process.uptime())}_
+⏱️ Uptime: ${func.runtime(process.uptime())}
 ${readmore}
 ⚙️ CPU model(s): ${cpuModels}
 🖥️ CPU cores: *${cpuCount}*

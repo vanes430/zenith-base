@@ -151,21 +151,17 @@ cmd.execute = async (
       }
     });
 
-    menuText += `📝 Note:\n`;
-    menuText += `Ⓛ = Limit\n`;
-    menuText += `Ⓟ = Premium\n`;
-    menuText += `Ⓥ = VIP\n\n`;
     menuText += `Ketik ${prefix}help <command> untuk melihat detail command`;
 
-    const url = "https://akanebot.xyz";
+    const url = "https://github.com/vanes430";
 
     const message = {
       extendedTextMessage: {
         text: menuText,
         contextInfo: {
           externalAdReply: {
-            title: "Bot WhatsApp Gratis | Akane Bot",
-            body: "Akane Bot menyediakan fitur fitur yang dapat anda gunakan secara gratis.",
+            title: "Zenith Bot",
+            body: "Zenith Base gratis",
             mediaType: 1,
             thumbnailUrl: global.db.settings.logo,
             sourceUrl: url,
