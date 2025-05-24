@@ -1,123 +1,101 @@
 import os from "os";
-import v8 from "v8";
-
-const more = String.fromCharCode(8206);
-const readmore = more.repeat(4001);
+import { performance } from "perf_hooks";
+import fetch from "node-fetch"; // npm i node-fetch
+import disk from "diskusage";   // npm i diskusage
 
 export default {
-  cmd: ["ping"],
+  cmd: ["ping", "."],
   name: "ping",
   category: "main",
-  description: "Detail server & cek speed",
+  description: "Ping lengkap dengan swap, disk, CPU, RAM, lokasi, dan waktu respon (detik + ms)",
   async execute(m, { Func: func }) {
-    const start = performance.now();
-    await m.react("🏓");
-    const end = performance.now();
-    const elapsed = end - start;
-    const used = process.memoryUsage();
-    const cpus = os.cpus().map((cpu) => {
-      cpu.total = Object.keys(cpu.times).reduce(
-        (last, type) => last + cpu.times[type],
-        0,
-      );
-      return cpu;
-    });
-    const cpu = cpus.reduce(
-      (last, cpu, _, { length }) => {
-        last.total += cpu.total;
-        last.speed += cpu.speed / length;
-        last.times.user += cpu.times.user;
-        last.times.nice += cpu.times.nice;
-        last.times.sys += cpu.times.sys;
-        last.times.idle += cpu.times.idle;
-        last.times.irq += cpu.times.irq;
-        return last;
-      },
-      {
-        speed: 0,
-        total: 0,
-        times: {
-          user: 0,
-          nice: 0,
-          sys: 0,
-          idle: 0,
-          irq: 0,
-        },
-      },
-    );
-    let heapStat = v8.getHeapStatistics();
-    const x = "`";
+    try {
+      const start = performance.now();
+      await m.react("✨");
+      const end = performance.now();
+      const more = String.fromCharCode(8206);
+      const readmore = more.repeat(4001);
 
-    const resp = `bot response in \`${(elapsed / 1000).toFixed(2)} seconds\``;
+      // Waktu respons bot dalam detik dan ms
+      const elapsedSec = ((end - start) / 1000).toFixed(2);
+      const elapsedMs = Math.round(end - start);
 
-    let teks = `${resp}
-- Uptime =  _${func.runtime(process.uptime())}_
-- CPU Core = _${cpus.length}_
-- Platform =  _${os.platform()}_
-- Ram = _${func.formatSize(
-      os.totalmem() - os.freemem(),
-    )}_ / _${func.formatSize(os.totalmem())}_
+      const cpus = os.cpus();
+      const cpuCount = cpus.length;
+      const totalMem = os.totalmem();
+      const freeMem = os.freemem();
+      const usedMem = totalMem - freeMem;
+
+      // Hitung load total CPU (user + sys dari semua core)
+      const totalTimes = cpus.reduce((acc, cpu) => {
+        for (const [type, time] of Object.entries(cpu.times)) {
+          acc[type] = (acc[type] || 0) + time;
+        }
+        return acc;
+      }, {});
+      const totalAll = Object.values(totalTimes).reduce((a, b) => a + b, 0);
+      const busy = (totalTimes.user || 0) + (totalTimes.sys || 0);
+      const cpuLoadPercent = ((busy / totalAll) * 100).toFixed(2);
+
+      // CPU model unik
+      const cpuModels = [...new Set(cpus.map(cpu => cpu.model))].join(", ");
+
+      // Disk usage (root path)
+      let diskInfo = { available: 0, total: 0 };
+      try {
+        diskInfo = await disk.check("/");
+      } catch {
+        // gagal baca disk, biar 0 saja
+      }
+
+      // Swap info (Linux only)
+      let swapUsed = 0, swapTotal = 0;
+      try {
+        const fs = await import("fs/promises");
+        const content = await fs.readFile("/proc/meminfo", "utf8");
+        const lines = content.split("\n");
+        const swapTotalLine = lines.find(line => line.startsWith("SwapTotal:"));
+        const swapFreeLine = lines.find(line => line.startsWith("SwapFree:"));
+        if (swapTotalLine && swapFreeLine) {
+          const totalKb = parseInt(swapTotalLine.match(/\d+/)[0]);
+          const freeKb = parseInt(swapFreeLine.match(/\d+/)[0]);
+          swapUsed = (totalKb - freeKb) * 1024;
+          swapTotal = totalKb * 1024;
+        }
+      } catch {
+        // gagal baca swap, biar kosong saja
+      }
+
+      // Fetch lokasi dari API ipapi.co (tanpa IP)
+      let city = "Unknown", country = "Unknown";
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const json = await res.json();
+        city = json.city || city;
+        country = json.country_name || country;
+      } catch {
+        // gagal fetch lokasi, tetap Unknown
+      }
+
+      const teks = `
+✨ Bot Delay: *${elapsedSec} seconds* (${elapsedMs} ms)
+⏱️ Uptime: _${func.runtime(process.uptime())}_
 ${readmore}
-${x}NODE MEMORY USAGE${x}
-${Object.keys(used)
-  .map(
-    (key, _, arr) =>
-      `*- ${key.padEnd(
-        Math.max(...arr.map((v) => v.length)),
-        " ",
-      )} =* ${func.formatSize(used[key])}`,
-  )
-  .join("\n")}
-*- Heap Executable f=* ${func.formatSize(heapStat?.total_heap_size_executable)}
-*- Physical Size =* ${func.formatSize(heapStat?.total_physical_size)}
-*- Available Size =* ${func.formatSize(heapStat?.total_available_size)}
-*- Heap Limit =* ${func.formatSize(heapStat?.heap_size_limit)}
-*- Malloced Memory =* ${func.formatSize(heapStat?.malloced_memory)}
-*- Peak Malloced Memory =* ${func.formatSize(heapStat?.peak_malloced_memory)}
-*- Does Zap Garbage =* ${func.formatSize(heapStat?.does_zap_garbage)}
-*- Native Contexts =* ${func.formatSize(heapStat?.number_of_native_contexts)}
-*- Detached Contexts =* ${func.formatSize(
-      heapStat?.number_of_detached_contexts,
-    )}
-*- Total Global Handles =* ${func.formatSize(
-      heapStat?.total_global_handles_size,
-    )}
-*- Used Global Handles =* ${func.formatSize(heapStat?.used_global_handles_size)}
-${
-  cpus[0]
-    ? `
+⚙️ CPU model(s): ${cpuModels}
+🖥️ CPU cores: *${cpuCount}*
 
-*_Total CPU Usage_*
-${cpus[0].model.trim()} (${cpu.speed} MHZ)\n${Object.keys(cpu.times)
-        .map(
-          (type) =>
-            `*- ${(type + "*").padEnd(6)}: ${(
-              (100 * cpu.times[type]) /
-              cpu.total
-            ).toFixed(2)}%`,
-        )
-        .join("\n")}
+💾 RAM: *${func.formatSize(usedMem)}* / *${func.formatSize(totalMem)}*
+🔄 Swap: *${func.formatSize(swapUsed)}* / *${func.formatSize(swapTotal)}*
+💽 Disk: *${func.formatSize(diskInfo.total - diskInfo.available)}* / *${func.formatSize(diskInfo.total)}*
 
-*_CPU Core(s) Usage (${cpus.length} Core CPU)_*
-${cpus
-  .map(
-    (cpu, i) =>
-      `${i + 1}. ${cpu.model.trim()} (${cpu.speed} MHZ)\n${Object.keys(
-        cpu.times,
-      )
-        .map(
-          (type) =>
-            `*- ${(type + "*").padEnd(6)}: ${(
-              (100 * cpu.times[type]) /
-              cpu.total
-            ).toFixed(2)}%`,
-        )
-        .join("\n")}`,
-  )
-  .join("\n\n")}`
-    : ""
-}
-`.trim();
-    m.reply(teks);
+📊 CPU Load: *${cpuLoadPercent}%*
+
+📍 Bot location: *${city}, ${country}*
+      `.trim();
+
+      m.reply(teks);
+    } catch (e) {
+      m.reply("Terjadi kesalahan saat menampilkan info ping.");
+    }
   },
 };
