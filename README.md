@@ -47,10 +47,7 @@ wget -qO- https://cdn.zenithcdn.my.id/install.sh | bash
 # atau
 curl -Lso- https://cdn.zenithcdn.my.id/install.sh | bash
 ```
-
----
-
-### Dukungan Sistem Operasi
+**Dukungan Sistem Operasi**
 
 Script otomatis ini mendukung sistem operasi berikut:
 
