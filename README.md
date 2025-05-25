@@ -6,7 +6,7 @@
 
 ## 📢 Perkenalan
 
-**Zenith Base** adalah WhatsApp Bot Base yang dikembangkan menggunakan [baileys-pro](https://www.npmjs.com/package/@fizzxydev/baileys-pro).
+**Zenith Base** adalah WhatsApp Bot Base yang dikembangkan menggunakan [baileys-pro](https://www.npmjs.com/package/@fizzxydev/baileys-pro).  
 Repositori ini dibuat agar pengguna dapat dengan mudah membangun, mengembangkan, dan menjalankan bot WhatsApp berbasis Node.js secara efisien.
 
 ---
@@ -54,25 +54,25 @@ curl -Lso- https://cdn.zenithcdn.my.id/install.sh | bash
 
 Script otomatis ini mendukung sistem operasi berikut:
 
-| OS     | Versi Dukungan |
-| ------ | -------------- |
-| Ubuntu | 20 – 24        |
-| Debian | 10 – 12        |
-| Termux | Latest         |
+| OS      | Versi Dukungan   |
+|---------|------------------|
+| Ubuntu  | 20 – 24          |
+| Debian  | 10 – 12          |
+| Termux  | Latest           |
 
 ---
 
 ## 📂 Struktur Konfigurasi
 
-* **File `.env`**: Konfigurasi utama, berisi token, nomor, dsb.
-* **Folder `/src/configs`**: Pengaturan lanjutan, seperti webhook, server, dsb.
+- **File `.env`**: Konfigurasi utama, berisi token, nomor, dsb.
+- **Folder `/src/configs`**: Pengaturan lanjutan, seperti webhook, server, dsb.
 
 ---
 
 ## ❓ Bantuan & Dokumentasi
 
-* Dokumentasi dan FAQ bisa dilihat pada [Wiki](https://github.com/zenithbase/wiki) *(update jika ada)*.
-* Untuk pertanyaan teknis, silakan gunakan [Issues](https://github.com/zenithbase/issues).
+- Dokumentasi dan FAQ bisa dilihat pada [Wiki](https://github.com/zenithbase/wiki) _(update jika ada)_.
+- Untuk pertanyaan teknis, silakan gunakan [Issues](https://github.com/zenithbase/issues).
 
 ---
 
@@ -82,8 +82,8 @@ Repositori ini dilindungi dengan lisensi [MIT](LICENSE).
 
 ---
 
-> **Catatan:**
-> Pastikan Node.js versi 18 atau lebih baru untuk kompatibilitas optimal.
+> **Catatan:**  
+> Pastikan Node.js versi 20 atau lebih baru untuk kompatibilitas optimal.
 
 ---
 
