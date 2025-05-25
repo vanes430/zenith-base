@@ -1,39 +1,90 @@
 # Zenith Base
 
-## Perkenalan
-Ini Adalah Bot wa base yang di kembangkan menggunakan [baileys-pro](https://www.npmjs.com/package/@fizzxydev/baileys-pro)
-Semoga Kamu menyukai nya
+[![Build](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/zenithbase)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E=18-blue)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](LICENSE)
 
-## Cara memulai
+## 📢 Perkenalan
 
-### Tutorial Panel Pterodactyl
-1. Clone Repository ini
-2. Upload Ke Panel Kalian
-3. Copy `.env.example` jadi `.env`
-4. isi data kalian ke `.env`
-5. Konfigurasi lainnya ada di `/src/configs`
-6. Setelah Selesi
-7. Run Command ini
-```
-# Install Node Modules
+**Zenith Base** adalah WhatsApp Bot Base yang dikembangkan menggunakan [baileys-pro](https://www.npmjs.com/package/@fizzxydev/baileys-pro).
+Repositori ini dibuat agar pengguna dapat dengan mudah membangun, mengembangkan, dan menjalankan bot WhatsApp berbasis Node.js secara efisien.
+
+---
+
+## 🚀 Cara Memulai
+
+### Menggunakan Panel Pterodactyl
+
+1. **Clone** repository ini.
+2. **Upload** ke panel Pterodactyl Anda.
+3. **Salin** file `.env.example` menjadi `.env`.
+4. **Isi** data konfigurasi Anda pada file `.env`.
+5. Konfigurasi tambahan tersedia di folder `/src/configs`.
+6. Setelah konfigurasi selesai, jalankan perintah berikut:
+
+```bash
+# Instalasi dependensi
 npm install
-# Run Script ini
+
+# Menjalankan Bot
 npm start
-# atau untuk safety
+
+# Atau untuk mode pemantauan otomatis
 npm run watcher
 ```
-### Tutorial VPS / Termux VPS egg [Pterodactyl](https://github.com/ysdragon/Pterodactyl-VPS-Egg/blob/main/egg-vps.json)
-1. Masuk Ke SSH vps kalian
-2. Run command ini
-```
-# Pilih  salah satu
+
+---
+
+### Deploy di VPS / Termux (VPS Egg Pterodactyl)
+
+1. Masuk ke SSH VPS Anda.
+2. Jalankan salah satu perintah berikut untuk instalasi otomatis:
+
+```bash
+# Pilih salah satu:
 wget -qO- https://cdn.zenithcdn.my.id/install.sh | bash
+
+# atau
 curl -Lso- https://cdn.zenithcdn.my.id/install.sh | bash
 ```
-saat ini script auto mendukung
-| OS      | Versi Dukungan    |
-|---------|-------------------|
-| Ubuntu  | 20 - 24           |
-| Debian  | 10 - 12           |
-| Termux  | Latest            |
 
+---
+
+### Dukungan Sistem Operasi
+
+Script otomatis ini mendukung sistem operasi berikut:
+
+| OS     | Versi Dukungan |
+| ------ | -------------- |
+| Ubuntu | 20 – 24        |
+| Debian | 10 – 12        |
+| Termux | Latest         |
+
+---
+
+## 📂 Struktur Konfigurasi
+
+* **File `.env`**: Konfigurasi utama, berisi token, nomor, dsb.
+* **Folder `/src/configs`**: Pengaturan lanjutan, seperti webhook, server, dsb.
+
+---
+
+## ❓ Bantuan & Dokumentasi
+
+* Dokumentasi dan FAQ bisa dilihat pada [Wiki](https://github.com/zenithbase/wiki) *(update jika ada)*.
+* Untuk pertanyaan teknis, silakan gunakan [Issues](https://github.com/zenithbase/issues).
+
+---
+
+## ⚠️ Lisensi
+
+Repositori ini dilindungi dengan lisensi [MIT](LICENSE).
+
+---
+
+> **Catatan:**
+> Pastikan Node.js versi 18 atau lebih baru untuk kompatibilitas optimal.
+
+---
+
+**Terima kasih telah menggunakan Zenith Base!**
