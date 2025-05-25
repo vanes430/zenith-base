@@ -62,17 +62,9 @@ Script otomatis ini mendukung sistem operasi berikut:
 
 ---
 
-## 📂 Struktur Konfigurasi
-
-- **File `.env`**: Konfigurasi utama, berisi token, nomor, dsb.
-- **Folder `/src/configs`**: Pengaturan lanjutan, seperti webhook, server, dsb.
-
----
-
 ## ❓ Bantuan & Dokumentasi
 
-- Dokumentasi dan FAQ bisa dilihat pada [Wiki](https://github.com/zenithbase/wiki) _(update jika ada)_.
-- Untuk pertanyaan teknis, silakan gunakan [Issues](https://github.com/zenithbase/issues).
+- Untuk pertanyaan teknis, silakan gunakan [Issues]
 
 ---
 
