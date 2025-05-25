@@ -1,6 +1,6 @@
 # Zenith Base
 
-[![Build](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/zenithbase)
+[![Build](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/zenith-base)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E=20-blue)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](LICENSE)
 
