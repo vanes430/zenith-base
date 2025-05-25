@@ -2,19 +2,24 @@ export default {
   cmd: ["hidetag", "ht"],
   name: "hidetag",
   category: "group",
-  description: "Tag all member mentions",
+  description: "Tag all member mentions with @Everyone",
   isGroup: true,
   isAdmin: true,
   execute: async (m, { client }) => {
-    const quoted = m.isQuoted ? m.quoted : m;
-    let mentions = m.metadata.participants.map((a) => a.id);
-    let mod = await client.cMod(
-      m.chat,
-      quoted,
-      /hidetag|tag|ht|h|totag/i.test(quoted.body)
-        ? quoted.body.replace(m.prefix + m.command, "")
-        : quoted.body,
-    );
-    await client.sendMessage(m.chat, { forward: mod, mentions });
+    try {
+      const groupMeta = await client.groupMetadata(m.chat);
+      const mentions = groupMeta.participants.map((a) => a.id);
+
+      // Tulis @Everyone sebagai teks yang di-tag semua anggota
+      const teks = "@Everyone";
+
+      await client.sendMessage(m.chat, {
+        text: teks,
+        mentions: mentions,
+      });
+    } catch (err) {
+      console.error("Error hidetag:", err);
+      await m.reply("Terjadi kesalahan saat menjalankan perintah hidetag.");
+    }
   },
 };

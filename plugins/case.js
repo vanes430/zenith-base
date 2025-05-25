@@ -1,7 +1,7 @@
 export async function before(m, { plugins, scrapers, Func }) {
 const prefixCase = [".", "!"];
 
-if (prefixCase.some(prefix => m.body.startsWith(prefix))) {
+if (typeof m.body === "string" && prefixCase.some(prefix => m.body.startsWith(prefix))) {
 const command = m.body.slice(1).toLowerCase();
 
 switch (command) {

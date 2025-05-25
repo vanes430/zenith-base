@@ -1,76 +1,130 @@
+import Tiktok from "@tobyg74/tiktok-api-dl";
+import fs from "fs/promises";
+import path from "path";
+import crypto from "crypto";
+import { exec } from "child_process";
+
+const downloadWithWget = (url, filepath) =>
+  new Promise((resolve, reject) => {
+    exec(`wget -q -O "${filepath}" "${url}"`, (error) =>
+      error ? reject(error) : resolve()
+    );
+  });
+
 export default {
-  cmd: ["tiktok", "tt", "tiktoknowm", "tiktokwm"],
+  cmd: ["tiktok", "tt"],
   name: "tiktok",
   category: "downloader",
-  description: "Download video dari TikTok (dengan atau tanpa watermark)",
+  description:
+    "Download video atau audio dari TikTok. Ketik .tiktok <url>, lalu pilih Video atau Audio.",
   usages: [
-    ["tiktok <url>", "Download tanpa watermark"],
-    ["tiktokwm <url>", "Download dengan watermark"],
+    ["tiktok <url>", "Tampilkan info video dengan pilihan download Video atau Audio"],
+    ["tiktok --video <url>", "Download video TikTok"],
+    ["tiktok --audio <url>", "Download audio musik TikTok"],
   ],
   limit: true,
-  execute: async (m, { client, API, Func }) => {
-    if (!m.text) {
+  execute: async (m, { client: sock, Func }) => {
+    if (!m.text)
       throw {
         message: "⚠️ Silakan masukkan URL TikTok yang ingin diunduh.",
         example: true,
       };
-    }
 
-    const url = Func.isUrl(m.text)[0];
+    const [firstArg, ...restArgs] = m.text.trim().split(/\s+/);
+    const flag = firstArg.startsWith("--") ? firstArg.toLowerCase() : null;
+    const url = flag ? restArgs.join(" ") : m.text.trim();
 
-    const tiktokRegex = /(?:https?:\/\/)?(?:www\.|vm\.)?tiktok\.com\/[@\w.-]+/i;
-    if (!tiktokRegex.test(url)) {
-      throw "❌ URL tidak valid! Pastikan URL berasal dari TikTok.";
-    }
+    const validUrl = Func.isUrl(url)?.[0];
+    if (!validUrl) throw "❌ Mohon sertakan URL TikTok yang valid.";
+    if (!/tiktok\.com/i.test(validUrl)) throw "❌ URL bukan dari TikTok.";
+
+    // Parallel: react dan cek/membuat folder temp (jika perlu)
+    const tempDir = "./temp";
+    await Promise.all([
+      sock.sendMessage(m.chat, { react: { text: "✅", key: m.key } }),
+      fs.mkdir(tempDir, { recursive: true }),
+    ]);
 
     try {
-      await m.reply("⏳ Sedang memproses, mohon tunggu...");
-
-      const response = await API.call("/download/tiktok", {
-        url: url,
+      const { status, result, message } = await Tiktok.Downloader(validUrl, {
+        version: "v2",
+        showOriginalResponse: false,
       });
 
-      if (!response || !response.result) {
-        throw "❌ Gagal mendapatkan data video. Coba lagi nanti.";
-      }
+      if (status !== "success" || !result) throw message || "❌ Gagal mendapatkan data dari TikTok.";
 
-      const { video, music, author, title, stats, created_at } =
-        response.result;
-      const videoUrl = m.command.includes("wm")
-        ? video.watermark
-        : video.noWatermark;
+      const {
+        author,
+        desc,
+        statistics,
+        video,
+        music,
+      } = result;
 
-      const caption = `🎵 *TikTok Downloader*
+      const videoUrl = Array.isArray(video?.playAddr) ? video.playAddr[0] : null;
+      const musicUrl = Array.isArray(music?.playUrl) ? music.playUrl[0] : null;
 
-👤 *Author:* ${author.name} (@${author.unique_id})
-📝 *Deskripsi:* ${title.slice(0, 100)}${title.length > 100 ? "..." : ""}
-📅 *Dibuat:* ${created_at}
-
-📊 *Statistik:*
-👍 ${stats.likeCount} Likes
-💬 ${stats.commentCount} Komentar
-🔄 ${stats.shareCount} Share
-▶️ ${stats.playCount} Play
-💾 ${stats.saveCount} Saved
-
-⭐ Download musik dengan command: .tiktokmp3 ${m.text}`.trim();
-
-      await m.reply(videoUrl, {
-        caption,
-        gifPlayback: false,
-      });
-    } catch (error) {
-      console.error("TikTok Download Error:", error);
-
-      if (error.message?.includes("not found")) {
-        await m.reply("❌ Video tidak ditemukan atau sudah dihapus.");
-      } else if (error.message?.includes("private")) {
-        await m.reply("❌ Video ini private atau tidak dapat diakses.");
-      } else {
-        await m.reply(
-          `❌ Terjadi kesalahan: ${error.message || "Unknown error"}\n\nCoba lagi nanti atau laporkan ke admin jika masalah berlanjut.`,
+      if (flag === "--video") {
+        if (!videoUrl) throw "❌ Video tidak tersedia.";
+        return await sock.sendMessage(
+          m.chat,
+          {
+            video: { url: videoUrl },
+            caption: `🎥 Video dari ${author?.nickname || "TikTok"}`,
+          },
+          { quoted: m }
         );
       }
+
+      if (flag === "--audio") {
+        if (!musicUrl) throw "❌ Audio tidak tersedia.";
+
+        const filenameAudio = path.join(tempDir, `audio-${crypto.randomBytes(6).toString("hex")}.mp4`);
+
+        // Download audio mp4 dengan wget
+        await downloadWithWget(musicUrl, filenameAudio);
+
+        // Kirim audio sebagai reply
+        await sock.sendMessage(
+          m.chat,
+          {
+            audio: { url: filenameAudio },
+            mimetype: "audio/mp4",
+          },
+          { quoted: m }
+        );
+
+        await fs.unlink(filenameAudio);
+        return;
+      }
+
+      // Tanpa flag: kirim info + tombol pilihan
+      const caption = `👤 Author: ${author?.nickname || "-"}
+📄 Deskripsi: ${desc || "-"}
+👍 Likes: ${statistics?.likeCount || "0"}
+💬 Komentar: ${statistics?.commentCount || "0"}
+🔄 Share: ${statistics?.shareCount || "0"}`;
+
+      const buttons = [
+        { buttonId: `.tiktok --video ${validUrl}`, buttonText: { displayText: "▶️ Video" }, type: 3 },
+        { buttonId: `.tiktok --audio ${validUrl}`, buttonText: { displayText: "🎵 Audio" }, type: 3 },
+      ];
+
+      await sock.sendMessage(
+        m.chat,
+        {
+          text: caption,
+          footer: "Pilih tombol untuk download Video atau Audio",
+          buttons,
+          headerType: 1,
+          viewOnce: true,
+        },
+        { quoted: m }
+      );
+    } catch (error) {
+      await m.reply(
+        `❌ Terjadi kesalahan: ${error.message || error}\n\nCoba lagi nanti atau laporkan ke admin jika masalah berlanjut.`
+      );
     }
   },
 };

@@ -1,3 +1,6 @@
+import ffmpeg from "fluent-ffmpeg";
+ffmpeg.setFfmpegPath("/usr/bin/ffmpeg");
+import config from "../../src/configs/config.js";
 export default {
   cmd: ["s", "sticker", "stiker"],
   name: "sticker",
@@ -14,7 +17,7 @@ export default {
 
       let exif = {
         packName: "Create By",
-        packPublish: db.settings.develover,
+        packPublish: config.pairingNumber,
       };
 
       if (m.text) {

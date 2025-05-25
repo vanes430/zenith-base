@@ -4,3 +4,5 @@ temp/database.json
 node_modules/
 package-lock.json
 .git
+har_and_cookies/
+temp/

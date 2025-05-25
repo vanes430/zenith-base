@@ -44,24 +44,36 @@ const checkGroupSettings = (m, db) => {
 const logMessage = async (client, m) => {
   if (!m.message) return;
 
-  console.log(
-    Color.cyan("From"),
-    Color.cyan(await client.getName(m.chat)),
-    Color.blueBright(m.chat),
-  );
-  console.log(
-    Color.yellowBright("Chat Type"),
-    Color.yellowBright(
+  try {
+    console.log(
+      Color.bgCyan(Color.black(" [From] ")),
       m.isGroup
-        ? `Group (${m.sender} : ${await client.getName(m.sender)})`
-        : "Private",
-    ),
-  );
-  console.log(
-    Color.greenBright("Message:"),
-    Color.greenBright(m.body || m.type),
-  );
+        ? `${Color.bgRedBright(Color.black(m.metadata.subject))} ${Color.bgBlue(Color.black(m.chat))}`
+        : `${Color.bgGray(Color.blue(m.chat))}`
+    );
+    console.log(
+      Color.bgYellow(Color.black(" [Chat Type] ")),
+      m.isGroup
+        ? `${Color.bgGreen(Color.black(" Group "))} (${Color.bgMagentaBright(Color.black(m.sender))} : ${m.pushName})`
+        : `${Color.bgGreen(Color.black(" Private "))} ${Color.bgMagentaBright(Color.black(m.pushName))}`
+    );
+    console.log(
+      Color.bgGreen(Color.black(" [Message] ")),
+      Color.whiteBright(m.body || m.type)
+    );
+    if (m.isCommand) {
+      console.log(
+        Color.bgBlue(Color.whiteBright(` Command: ${m.command || "-"} `)),
+        Color.bgMagenta(Color.whiteBright(` Prefix: ${m.prefix || "-"} `)),
+        Color.bgCyan(Color.whiteBright(` Args: ${m.args ? m.args.length : 0} `))
+      );
+    }
+    console.log(Color.gray("─".repeat(50))); // separator line
+  } catch (error) {
+    console.error(Color.bgRed(Color.whiteBright(" Error logging message: ")), error);
+  }
 };
+
 
 const checkPluginConditions = (plugin, m, groupSettings, userPerms) => {
   if (plugin.isOwner && !m.isOwner) return "owner";
@@ -115,8 +127,16 @@ const checkUsagePattern = (plugin, m) => {
 
 const handleMessagesUpsert = async (client, store, m, messages) => {
   try {
+    // Validasi objek pesan dan message
+    if (!m || !m.message) {
+      console.warn("loadDatabase: message tidak valid atau undefined, proses dihentikan.");
+      return;
+    }
+
+    // Panggil loadDatabase dengan pesan valid
     await loadDatabase(m);
 
+    // Pastikan akses properti isQuoted aman
     const quoted = m.isQuoted ? m.quoted : m;
 
     if (m.isBaileys) return;
@@ -151,8 +171,7 @@ const handleMessagesUpsert = async (client, store, m, messages) => {
               scrapers,
               Func,
             })
-          )
-            continue;
+          ) continue;
         }
 
         if (m.prefix) {
@@ -169,7 +188,7 @@ const handleMessagesUpsert = async (client, store, m, messages) => {
           m.plugin = name;
           m.isCommand = true;
 
-          // Check conditions and usage pattern
+          // Cek kondisi plugin dan izin pengguna
           const conditionError = checkPluginConditions(
             plugin,
             m,
@@ -221,7 +240,7 @@ const handleMessagesUpsert = async (client, store, m, messages) => {
             }
           } catch (error) {
             console.error(`Error in plugin ${name}:`, error);
-            m.reply(util.format(error));
+            m.reply(String(error));
           } finally {
             if (typeof plugin.after === "function") {
               try {
@@ -243,6 +262,7 @@ const handleMessagesUpsert = async (client, store, m, messages) => {
     console.error(Color.redBright("Error handling message:"), error);
   }
 };
+
 
 export { handleMessagesUpsert };
 export default {

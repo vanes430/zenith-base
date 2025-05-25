@@ -18,8 +18,10 @@
   "license": "MIT",
   "dependencies": {
     "@hapi/boom": "latest",
-    "baileys": "npm:baileys-mod@latest",
+    "@tobyg74/tiktok-api-dl": "^1.3.1-fix",
+    "baileys": "npm:@fizzxydev/baileys-pro@latest",
     "cheerio": "latest",
+    "crypto": "^1.0.1",
     "diskusage": "^1.2.0",
     "dotenv": "latest",
     "file-type": "latest",

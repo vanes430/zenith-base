@@ -56,7 +56,7 @@ const getDefaultSettings = () => ({
   firstchat: true,
   readstory: true,
   reactstory: false,
-  autoread: false,
+  autoread: true,
   self: false,
   smlcap: false,
   adReply: false,
@@ -95,12 +95,20 @@ const getDefaultBot = () => ({
  * @param {Object} m Message object
  */
 function loadDatabase(m) {
+  // Anti-error: pastikan message dan sender-nya ada
+  if (!m || typeof m.sender !== 'string' || !m.sender.length) {
+    console.error("loadDatabase: message atau sender tidak valid:", m);
+    return;
+  }
+
+  // Inisialisasi database global jika belum ada
   if (!global.db) global.db = {};
   if (!global.db.users) global.db.users = {};
   if (!global.db.groups) global.db.groups = {};
   if (!global.db.settings) global.db.settings = {};
   if (!global.db.bots) global.db.bots = {};
 
+  // Proses user
   let user = global.db.users[m.sender];
   if (!validators.isObject(user)) {
     global.db.users[m.sender] = getDefaultUser(m);
@@ -113,7 +121,13 @@ function loadDatabase(m) {
     }
   }
 
+  // Proses group (jika pesan dari grup)
   if (m.isGroup) {
+    // Anti-error: pastikan chat ID valid
+    if (typeof m.chat !== 'string' || !m.chat.length) {
+      console.error("loadDatabase: chat ID group tidak valid:", m);
+      return;
+    }
     let group = global.db.groups[m.chat];
     if (!validators.isObject(group)) {
       global.db.groups[m.chat] = getDefaultGroup();
@@ -127,6 +141,7 @@ function loadDatabase(m) {
     }
   }
 
+  // Proses settings
   let settings = global.db.settings;
   if (!validators.isObject(settings)) {
     global.db.settings = getDefaultSettings();
@@ -139,6 +154,7 @@ function loadDatabase(m) {
     }
   }
 
+  // Proses bot config
   let bots = global.db.bots;
   if (!validators.isObject(bots)) {
     global.db.bots = getDefaultBot();
@@ -151,6 +167,7 @@ function loadDatabase(m) {
     }
   }
 }
+
 
 export { loadDatabase };
 export default {
