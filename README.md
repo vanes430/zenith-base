@@ -35,7 +35,7 @@ npm run watcher
 
 ---
 
-### Deploy di VPS / Termux (VPS Egg Pterodactyl)
+### Deploy di VPS / Termux ([VPS Egg Pterodactyl](https://github.com/ysdragon/Pterodactyl-VPS-Egg/blob/main/egg-vps.json))
 
 1. Masuk ke SSH VPS Anda.
 2. Jalankan salah satu perintah berikut untuk instalasi otomatis:
