@@ -22,7 +22,7 @@ npm start
 # atau untuk safety
 npm run watcher
 ```
-### Tutorial VPS / Termux
+### Tutorial VPS / Termux VPS egg [Pterodactyl](https://github.com/ysdragon/Pterodactyl-VPS-Egg/blob/main/egg-vps.json)
 1. Masuk Ke SSH vps kalian
 2. Run command ini
 ```
@@ -37,7 +37,3 @@ saat ini script auto mendukung
 | Debian  | 10 - 12           |
 | Termux  | Latest            |
 
-### Tutorial Di VPS egg Pterodactyl [Click Here](https://github.com/ysdragon/Pterodactyl-VPS-Egg/blob/main/egg-vps.json)
-1. Masuk ke panel
-2. Pilih Ubuntu kemudian pilih Ubuntu Jammy (22)
-3. Run script auto installer tadi
